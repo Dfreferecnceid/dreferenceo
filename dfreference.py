@@ -4,12 +4,21 @@ import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 
 def get_dfreference():
-    # Headless browser setup
+    # Setup for headless Chrome
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # Run without opening a browser
-    service = Service("/usr/local/bin/chromedriver")  # Adjust path if needed
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--remote-debugging-port=9222")
+    chrome_options.add_argument("--disable-gpu")  # Disable GPU acceleration (headless mode)
+    
+    # Download ChromeDriver using webdriver_manager (auto installs the correct version)
+    service = Service(ChromeDriverManager().install())
+    
+    # Setup webdriver
     driver = webdriver.Chrome(service=service, options=chrome_options)
     
     # Open website
