@@ -1,12 +1,23 @@
 import time
 import json
+import os
 import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+import subprocess
+
+def install_chrome_and_driver():
+    # Install Google Chrome and ChromeDriver on Render
+    subprocess.run(['apt-get', 'update'], check=True)
+    subprocess.run(['apt-get', 'install', '-y', 'google-chrome-stable'], check=True)
+    subprocess.run(['apt-get', 'install', '-y', 'chromium-chromedriver'], check=True)
 
 def get_dfreference():
+    # Install Chrome and ChromeDriver
+    install_chrome_and_driver()
+
     # Setup for headless Chrome
     chrome_options = Options()
     chrome_options.add_argument("--headless")  # Run without opening a browser
@@ -15,8 +26,8 @@ def get_dfreference():
     chrome_options.add_argument("--remote-debugging-port=9222")
     chrome_options.add_argument("--disable-gpu")  # Disable GPU acceleration (headless mode)
     
-    # Download ChromeDriver using webdriver_manager (auto installs the correct version)
-    service = Service(ChromeDriverManager().install())
+    # Use the ChromeDriver installed via apt
+    service = Service("/usr/lib/chromium-browser/chromedriver")
     
     # Setup webdriver
     driver = webdriver.Chrome(service=service, options=chrome_options)
